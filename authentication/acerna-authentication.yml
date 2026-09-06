@@ -1,0 +1,64 @@
+generated: '2026-09-06'
+method: searched
+source: https://www.acernatec.com/_api/mcp
+docs: https://dev.wix.com/docs/develop-websites/articles/get-started/about-the-wix-site-mcp
+scope: >-
+  aceRNA Technologies publishes no OpenAPI, no developer portal and no API key programme, so there
+  is no securityScheme to derive from. The only callable surface on the domain is the Wix-provided
+  Site MCP endpoint, and this profile records the auth model that endpoint actually enforces, as
+  observed live on 2026-09-06.
+summary:
+  types:
+  - none
+  - session-token
+  api_key_in: []
+  oauth2_flows: []
+  anonymous_discovery: true
+schemes:
+- name: anonymous
+  type: none
+  applies_to:
+  - 'MCP method: tools/list'
+  - 'MCP method: tools/call (GetBusinessDetails, SearchInSite, SearchSiteApiDocs, GenerateVisitorToken)'
+  description: >-
+    Discovery is unauthenticated. POST tools/list to https://www.acernatec.com/_api/mcp with no
+    credentials returns HTTP 200 and the full 9-tool manifest with JSON Schema inputs. A
+    tools/call of GetBusinessDetails with no credentials also returned 200.
+  evidence:
+    url: https://www.acernatec.com/_api/mcp
+    request: POST {"jsonrpc":"2.0","id":1,"method":"tools/list"}
+    http_status: 200
+    fetched: '2026-09-06'
+- name: visitorToken
+  type: session-token
+  issued_by: GenerateVisitorToken
+  passed_as: visitorToken parameter on the tool call (not an HTTP header)
+  applies_to:
+  - CallWixSiteAPI
+  - ExecuteWixAPI
+  description: >-
+    Actions taken on a visitor's behalf require a visitor access token. An agent calls the
+    GenerateVisitorToken tool, which takes no parameters and creates an anonymous visitor session,
+    then passes the returned token as the visitorToken argument. This is a self-service anonymous
+    session, not an identity credential — there is no registration, account, key issuance or
+    approval step anywhere on this domain.
+  evidence:
+    url: https://www.acernatec.com/_api/mcp
+    source: 'tools/list inputSchema: visitorToken listed in required[] for CallWixSiteAPI and ExecuteWixAPI'
+    http_status: 200
+    fetched: '2026-09-06'
+observations:
+- >-
+  GET (rather than POST) on https://www.acernatec.com/_api/mcp returns HTTP 401 application/json
+  with {"error":"invalid_token","error_description":"Missing Authorization header"}, confirming the
+  endpoint enforces the MCP transport contract rather than answering everything 200.
+- >-
+  No OAuth metadata is published: /.well-known/oauth-authorization-server,
+  /.well-known/oauth-protected-resource and /.well-known/oauth-protected-resource/_api/mcp all
+  return HTTP 400 on this origin, as does a control path under /.well-known/, so 400 is the Wix
+  catch-all for that prefix rather than a server fault.
+- >-
+  ExecuteWixAPI is annotated destructiveHint:true and executes caller-supplied JavaScript against
+  the Wix REST API under the anonymous visitor session. Anyone on the internet can obtain that
+  session, so the effective trust boundary is whatever the Wix visitor role permits on this site —
+  which, on a marketing-only site with no store, bookings or members area installed, is narrow.

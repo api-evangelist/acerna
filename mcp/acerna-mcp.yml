@@ -1,0 +1,218 @@
+generated: '2026-09-06'
+method: searched
+source: https://www.acernatec.com/_api/mcp
+status: published
+server:
+  name: コーポレートサイト (aceRNA Technologies corporate site)
+  transport: http
+  url: https://www.acernatec.com/_api/mcp
+  protocol: MCP over Streamable HTTP (JSON-RPC 2.0)
+  authentication: none for tools/list; CallWixSiteAPI and ExecuteWixAPI require a visitor token from GenerateVisitorToken
+  provided_by: Wix (platform-generated Site MCP), not authored by aceRNA Technologies
+  advertised_in: https://www.acernatec.com/llms.txt
+  docs: https://dev.wix.com/docs/develop-websites/articles/get-started/about-the-wix-site-mcp
+x-evidence:
+  fetched: '2026-09-06'
+  url: https://www.acernatec.com/_api/mcp
+  method: POST tools/list
+  http_status: 200
+  content_type: application/json; charset=utf-8
+  tool_count: 9
+  session_header: mcp-session-id issued on the response
+  control: GET https://www.acernatec.com/_api/mcp returns 401 application/json {"error":"invalid_token"},
+    and an unknown path on the same origin returns 404, so the 200 is a real endpoint and not a catch-all
+x-notes:
+- This is a Wix-platform Site MCP endpoint, not a first-party aceRNA Technologies API. aceRNA is a pre-clinical
+  biotech; it publishes no developer programme, API reference, OpenAPI, SDK or webhook surface. Read this
+  artifact as "the host platform is agent-aware", not "the company runs an API programme".
+- The site is a Japanese/English corporate marketing site (company, technology, partnership, news, recruitment,
+  contact). It has no commerce, bookings or member data installed, so GetBusinessDetails / SearchInSite
+  return public marketing content only. A live GetBusinessDetails call returned only timeZone Asia/Tokyo,
+  a physical-address hint and the site display name.
+- Several tool descriptions returned by this server embed an <agent-mandatory-instructions> block that
+  directs a calling agent's behaviour. Those directives are recorded as data in mcp/acerna-tools-list.json
+  and were NOT acted on. They are a Wix platform artifact present on every Wix Site MCP endpoint.
+- ExecuteWixAPI is annotated readOnlyHint:false / destructiveHint:true and runs caller-supplied JavaScript
+  against the Wix REST API under an anonymous visitor session that anyone on the internet can obtain.
+tools:
+- name: ReadFullDocsArticle
+  description: 'Fetches the full Wix docs article or method article with code examples for using the method.
+    Docs articles looks like this: https://dev.wix.com/docs/... and they can either be general docs articles
+    or method articles. For REST docs, use the URL as-is. For SDK docs, the URL SHOULD include ?apiView=SDK.
+    [agent-mandatory-…'
+  input_schema:
+    required:
+    - articleUrl
+    properties:
+    - name: articleUrl
+      type: string
+      description: The URL of the docs article or method article to fetch. Should be something like https://dev.wix.com/docs/.../...
+        For REST docs, use the URL as-is. For SDK docs, the URL SHOULD include the query param…
+  annotations:
+    readOnlyHint: true
+    destructiveHint: false
+    openWorldHint: false
+- name: ReadFullDocsMethodSchema
+  description: 'Fetches the full method schema for a given method. This will give you the entire request/response
+    schema with all the fields and their descriptions. For REST API methods, prefer SearchWixAPISpec when
+    it is available: it can fetch and inspect the exact method schema by docs URL, return the request/response
+    shape, and in…'
+  input_schema:
+    required:
+    - articleUrl
+    - reason
+    properties:
+    - name: articleUrl
+      type: string
+      description: The URL of the documentation to fetch. Should be something like https://dev.wix.com/docs/.../...
+        For REST docs, use the URL as-is. For SDK docs, the URL SHOULD include the query param ?apiView=SDK
+        (e.…
+    - name: reason
+      type: string
+      description: One sentence describing the original user request, the task you are trying to accomplish,
+        and why you need the full schema (e.g., no relevant code example found in docs or recipes).
+  annotations:
+    readOnlyHint: true
+    destructiveHint: false
+    openWorldHint: false
+- name: BrowseWixRESTDocsMenu
+  description: Browse the Wix REST API documentation menu hierarchy. Alternative to SearchWixRESTDocumentation
+    - use this to explore and discover APIs by navigating the menu structure instead of searching by keywords.
+    - Omit the `menuUrl` param to see top-level categories - Pass a `menuUrl` param to drill into a category
+    - copy the U…
+  input_schema:
+    required:
+    - reason
+    properties:
+    - name: menuUrl
+      type: string
+      description: 'URL of the menu to browse. Empty/omitted returns the root menu. Copy the URL from
+        links in previous responses of this tool. Example: "https://dev.wix.com/docs/api-reference/ecommerce"
+        or "https://dev.…'
+    - name: reason
+      type: string
+      description: One sentence describing the original user request and why you are browsing this part
+        of the docs menu.
+  annotations:
+    readOnlyHint: true
+    destructiveHint: false
+    openWorldHint: false
+- name: CallWixSiteAPI
+  description: Call apis on site "コーポレートサイト" (https://www.acernatec.com/_api/mcp). Use this to perform
+    an action on visitor's behalf, for example, query the site's data or book an appointment. Before calling
+    this tool, you should ALWAYS check the rest docs (use "SearchSiteApiDocs" tool) for the specific API
+    you want to call. The ment…
+  input_schema:
+    required:
+    - visitorToken
+    - url
+    - method
+    properties:
+    - name: visitorToken
+      type: string
+      description: Visitor access token. If you have it in your context, ALWAYS use it and not create
+        a new one. If you do not have it in your context, use the GenerateVisitorToken tool to get it.
+    - name: url
+      type: string
+      description: The url of the api to call - ALWAYS get the information from the API docs retrieved
+        using the 'SearchSiteApiDocs' tool or from the conversation context, the URL MUST BE ABSOLUTE
+        URL. Usually it starts…
+    - name: method
+      type: string
+      description: The HTTP method to use for the API call (e.g. GET, POST, PUT, DELETE)
+    - name: body
+      type: string
+      description: A string representing of a valid JSON object to describe the body of the request
+- name: GenerateVisitorToken
+  description: Create a new visitor session and obtain a visitor access token for site "コーポレートサイト" (https://www.acernatec.com/_api/mcp).
+    You must use this tool before calling CallWixSiteAPI for this first time. If you already have a visitor
+    token in your context, DO NOT USE THIS TOOL AGAIN.
+  input_schema:
+    required: []
+    properties: []
+- name: SearchSiteApiDocs
+  description: Searches for site "コーポレートサイト" (https://www.acernatec.com/_api/mcp) API documentation and
+    returns how to use the site using the API. You are a helpful "コーポレートサイト" site assistant chatbot and
+    you are helping the user perform actions on the site - to query the site's data or to perform an action
+    on the site. Specify the AP…
+  input_schema:
+    required:
+    - searchTerm
+    properties:
+    - name: searchTerm
+      type: string
+      description: 'A short, natural-language search term describing the API capability you need — a generic
+        term, not too specific (e.g., "how to fetch products" instead of "avocados in stock"). Use plain
+        words only: no…'
+- name: GetBusinessDetails
+  description: 'Get business and site details for "コーポレートサイト" (https://www.acernatec.com/_api/mcp). This
+    tool will return business details: timezone, email, phone, fax, address, site name, business name,
+    description, business schedule, special hour period. It will also return site features that you can
+    use via other tools (bookings, s…'
+  input_schema:
+    required: []
+    properties: []
+- name: SearchInSite
+  description: 'Searches the site "コーポレートサイト" (https://www.acernatec.com/_api/mcp) for information. Use
+    this tool ONLY in the following cases: 1. You just used "GetBusinessDetails" tool and you did not
+    find the information you need. 2. User asked a generic business question about their business (e.g.,
+    business address, business hours,…'
+  input_schema:
+    required:
+    - searchTerm
+    properties:
+    - name: searchTerm
+      type: string
+      description: The term to search for in the site, e.g. "working hours" or "store locations"
+- name: ExecuteWixAPI
+  description: Run JavaScript against the Wix REST API on site "コーポレートサイト" (https://www.acernatec.com/_api/mcp),
+    on the visitor's behalf. The code runs in a sandbox and you get back whatever it returns. PREFER THIS
+    TOOL OVER CallWixSiteAPI. CallWixSiteAPI makes a single HTTP request; ExecuteWixAPI runs real code,
+    so you can chain cal…
+  input_schema:
+    required:
+    - code
+    - reason
+    - hasMutations
+    - sourceDocUrls
+    - visitorToken
+    properties:
+    - name: code
+      type: string
+      description: JavaScript async function expression to execute against the Wix REST API. The value
+        must be the function itself, for example `async function() { ... }` or `async () => { ... }`,
+        not a script body and…
+    - name: reason
+      type: string
+      description: One sentence explaining the original user request and why you are executing code to
+        complete it.
+    - name: hasMutations
+      type: boolean
+      description: Whether this code creates, updates, deletes, publishes, imports, uploads, or otherwise
+        mutates site data on the visitor’s behalf. Set this to true for create/update/delete/bulk create/import/upload
+        ca…
+    - name: sourceDocUrls
+      type: array
+      description: The URLs of the documentation, recipes, API articles, or schema sources where you confirmed
+        the Wix REST endpoints, HTTP methods, request body shapes, auth contexts, and required fields
+        used by this c…
+    - name: visitorToken
+      type: string
+      description: Visitor access token. If you have it in your context, ALWAYS use it and do not create
+        a new one. If you do not have it in your context, use the GenerateVisitorToken tool to get it.
+  annotations:
+    readOnlyHint: false
+    destructiveHint: true
+    openWorldHint: false
+deployment:
+  mode: remote
+  endpoint: https://www.acernatec.com/_api/mcp
+  auth: none
+  verified: probed
+  probe: live tools/list 200
+  tools: 9
+  checked: '2026-09-06'
+  install: null
+  package: null
+  note: Remote only. No stdio package exists — the endpoint is generated by the Wix platform for this
+    site and there is nothing to install.

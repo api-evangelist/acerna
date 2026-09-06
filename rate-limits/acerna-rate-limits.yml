@@ -1,0 +1,24 @@
+generated: '2026-09-06'
+method: searched
+source: https://www.acernatec.com/llms.txt
+limit_count: 0
+limits: []
+headers: []
+note: >-
+  No rate limits are published anywhere on the aceRNA Technologies domain. There is no developer
+  documentation to state them, and the site's llms.txt — which does document the Site MCP endpoint,
+  its tools and its (absent) authentication requirement — says nothing about throttling, quotas or
+  retry behaviour. A live anonymous POST of tools/list to https://www.acernatec.com/_api/mcp
+  returned HTTP 200 carrying no RateLimit-*, X-RateLimit-* or Retry-After header, so there is no
+  runtime signal an agent could read either. Wix presumably applies platform-level limits to
+  /_api/mcp, but they are undocumented and unobservable from a single successful call, so nothing
+  is asserted here. An honest zero.
+evidence:
+- url: https://www.acernatec.com/_api/mcp
+  status: 200
+  note: >-
+    POST tools/list; response headers observed were content-type, mcp-session-id, etag, pragma,
+    cache-control, x-wix-request-id, set-cookie, x-robots-tag, server, strict-transport-security —
+    no rate-limit family header of any kind.
+- url: https://www.acernatec.com/llms.txt
+  status: 200

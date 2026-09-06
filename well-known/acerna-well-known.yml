@@ -1,0 +1,83 @@
+generated: '2026-09-06'
+method: probed
+source: live GET of the /.well-known/ discovery surface on every host in apis.yml
+found: 0
+summary: >-
+  No /.well-known/ discovery document is published on either host. The Wix origin answers every
+  /.well-known/* path with HTTP 400 and an HTML error body rather than 404, so a 400 here is the
+  "not present" signal on this platform, not a server fault. Verified against a control path under
+  the same prefix that also returns 400, confirming the responses are a catch-all and not a real
+  document. By contrast /llms.txt on the same origin returns 200 with real content, so that hit is
+  genuine.
+hosts:
+- host: www.acernatec.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 400
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 400
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 400
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 400
+    file: null
+  - path: /.well-known/oauth-protected-resource/_api/mcp
+    status: 400
+    file: null
+  - path: /.well-known/api-catalog
+    status: 400
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 400
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 400
+    file: null
+  - path: /.well-known/agent.json
+    status: 400
+    file: null
+  - path: /.well-known/aauth-resource.json
+    status: 400
+    file: null
+  - path: /security.txt
+    status: 400
+    file: null
+- host: acernatec.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 400
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 400
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 400
+    file: null
+  - path: /.well-known/api-catalog
+    status: 400
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 400
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 400
+    file: null
+  - path: /.well-known/agent.json
+    status: 400
+    file: null
+controls:
+- path: /.well-known/zzz-control-nonexistent-8821
+  status: 400
+  note: >-
+    Control path proving the 400 responses are the origin's catch-all for the /.well-known/ prefix.
+- path: /zzz-no-such-path-9931
+  status: 404
+  note: >-
+    Outside /.well-known/ the same origin returns a real 404, so the router is not blanket-200.
+x-notes:
+- >-
+  No WellKnown, SecurityTxt or AgentCard pointer is wired in apis.yml, because nothing was found.
+  This file is the negative probe record only.

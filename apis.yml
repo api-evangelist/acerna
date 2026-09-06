@@ -1,23 +1,115 @@
 aid: acerna
-name: Acerna
-description: 'Acerna is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+name: aceRNA Technologies
+description: >-
+  aceRNA Technologies Co., Ltd. is a Japanese biotechnology venture founded in April 2018 to
+  commercialize the RNA design technology ("RNA Switch") developed in the synthetic RNA biology
+  laboratory of Prof. Hirohide Saito at Kyoto University. An RNA Switch is embedded into a
+  messenger RNA so that expression of the therapeutic transgene is gated by the activity of a
+  specific microRNA inside the cell, letting a treatment act only on the cell type and cell state
+  that is diseased. The company applies the platform across mRNA medicines, cell therapy and gene
+  therapy, co-develops with partners (an agreement with Nitto Denko was announced in December
+  2021), and closed a JPY 960M Series B in May 2024 led by DCI Partners. It is headquartered at
+  the University of Tokyo Entrepreneur Plaza. aceRNA runs no developer programme and publishes no
+  API reference, OpenAPI or SDK; the only machine-readable surfaces on its domain are the
+  Wix-platform llms.txt and Site MCP endpoint, both captured here.
+image: https://static.wixstatic.com/media/0bb01f_e4929cb81df449498969dcb40a661968~mv2.png
 url: https://raw.githubusercontent.com/api-evangelist/acerna/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
+x-source-listing: https://equityzen.com/company/acerna
 specificationVersion: '0.20'
 created: '2026-09-06'
 modified: '2026-09-06'
 tags:
 - Company
-apis: []
+- Biotechnology
+- Therapeutics
+- Genetic Medicine
+- Life Sciences
+- Pharmaceuticals
+- Japan
+- MCP
+tags_raw:
+- Company
+- Biotechnology
+- Therapeutics
+- Genetic Medicine
+- Life Sciences
+- Pharmaceuticals
+- Japan
+- Model Context Protocol
+apis:
+- aid: acerna:site-mcp
+  name: aceRNA Technologies Site MCP
+  description: >-
+    A live, anonymously reachable Model Context Protocol endpoint served from aceRNA Technologies'
+    own host and advertised in the site's llms.txt. It is provided by the Wix platform, not built
+    by aceRNA — it exposes generic Wix site tools (business details, in-site search, site API doc
+    search, anonymous visitor-token issuance and a Wix REST API call/execute bridge) over the
+    public content of www.acernatec.com. A tools/list call returns 9 tools with real JSON Schema
+    inputs. There is no aceRNA-authored API behind it.
+  image: https://static.wixstatic.com/media/0bb01f_e4929cb81df449498969dcb40a661968~mv2.png
+  humanURL: https://www.acernatec.com/
+  baseURL: https://www.acernatec.com/_api/mcp
+  tags:
+  - MCP
+  - Website
+  tags_raw:
+  - Model Context Protocol
+  - Website
+  properties:
+  - type: MCPServer
+    url: mcp/acerna-mcp.yml
+  - type: LLMsTxt
+    url: llms/acerna-llms.txt
+  - type: Authentication
+    url: authentication/acerna-authentication.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+x-enrichment:
+  date: '2026-09-06'
+  status: enriched
+  artifacts_added: 9
+  pass: local-v3
+x-coverage:
+  state: covered
+  reason: covered
+  detail: >-
+    aceRNA Technologies runs no developer programme and publishes no OpenAPI, GraphQL SDL, SDK or
+    webhook surface, but its Wix-hosted site does serve a real llms.txt and a live, anonymously
+    callable Site MCP endpoint at /_api/mcp that returns 9 tools with JSON Schema inputs — both
+    captured verbatim here.
+  evidence:
+  - url: https://www.acernatec.com/llms.txt
+    status: 200
+  - url: https://www.acernatec.com/_api/mcp
+    status: 200
+  - url: https://www.acernatec.com/openapi.json
+    status: 400
+  - url: https://www.acernatec.com/.well-known/agent-card.json
+    status: 400
+  checked: '2026-09-06'
 common:
 - type: Website
-  url: https://equityzen.com/company/acerna
+  url: https://www.acernatec.com/
+- type: MCPServer
+  url: mcp/acerna-mcp.yml
+- type: LLMsTxt
+  url: llms/acerna-llms.txt
+- type: Authentication
+  url: authentication/acerna-authentication.yml
+- type: Conformance
+  url: conformance/acerna-conformance.yml
+- type: DomainSecurity
+  url: security/acerna-domain-security.yml
+- type: Blog
+  url: https://www.acernatec.com/en/news/
+- type: Support
+  url: https://www.acernatec.com/en/contact/
+- type: PrivacyPolicy
+  url: https://www.acernatec.com/en/privacypolicy/
+- type: LinkedIn
+  url: https://www.linkedin.com/company/acerna-technologies

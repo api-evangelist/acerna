@@ -1,0 +1,20 @@
+generated: '2026-09-06'
+method: searched
+source: https://www.acernatec.com/en
+plan_count: 0
+plans: []
+note: >-
+  aceRNA Technologies publishes no pricing, plans, tiers or commercial terms of any kind. It is a
+  pre-clinical RNA therapeutics developer whose commercial motion is partner co-development
+  (its Partnership page invites companies to develop therapies together with RNA Switches), not a
+  self-serve or subscription product. The site's 12 crawlable pages — home, company, technology,
+  partnership, news, recruitment, contact, privacy policy — contain no pricing page and no
+  /pricing or /plans path exists. The one callable surface on the domain, the Wix Site MCP
+  endpoint, is a platform feature of the site's own Wix subscription and is not sold or metered by
+  aceRNA. This is an honest zero, not an unmeasured field.
+evidence:
+- url: https://www.acernatec.com/pages-sitemap.xml
+  status: 200
+  note: enumerates all 12 published pages; none is a pricing or plans page
+- url: https://www.acernatec.com/en
+  status: 200
