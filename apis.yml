@@ -96,6 +96,10 @@ x-coverage:
     status: 400
   checked: '2026-09-06'
 common:
+- type: Plans
+  url: plans/acerna-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/acerna-rate-limits.yml
 - type: Website
   url: https://www.acernatec.com/
 - type: MCPServer
